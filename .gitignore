@@ -1,0 +1,41 @@
+# --- Build directories ---
+build/
+CMakeFiles/
+cmake-build-*/
+
+# --- CMake generated files ---
+CMakeCache.txt
+Makefile
+cmake_install.cmake
+compile_commands.json
+
+# --- VS Code settings ---
+.vscode/
+*.code-workspace
+
+# --- Object & binary files ---
+*.o
+*.obj
+*.exe
+*.out
+*.a
+*.so
+*.dll
+
+# --- macOS system files ---
+.DS_Store
+
+# --- Ninja build artifacts ---
+.ninja*
+*.ninja
+
+# --- CLion / JetBrains project files ---
+.idea/
+*.iml
+
+# --- Debug symbols ---
+*.dSYM/
+
+# --- Logs & temp ---
+*.log
+*.json
