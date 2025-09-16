@@ -32,3 +32,26 @@ FOR UF students WHO need a platform to find and view information of all availabl
 
 ## Risk Management Plan:
 In order to avoid and minimize the risks identified by this plan the team will use defensive coding strategies to ensure all data is secure, prioritize comprehensive user authentication, such as two step authentification, and pre plan the database structure to prevent delays. To ensure the project is being constantly updated the team will have deadlines to meet for tasks throughout the development process. In the event that a data leak occurs the priority will be to identify the source of the leak, contain that source and prevent further data from being lost. Authentication requirements will be a two step process with a username and password combination as well as either duo push or a text message code. If this authentication process is not adequate for user protection, security questions will be introduced to the sign in process. Database and schema compatibility errors could be detrimental to submitting the project on time, proper planning is imperative to avoiding this. First, team members will identify where the incompatibility is located and how wide spread the error is. Depending on the severity of the error, team members will restructure the schema to be compatible with the required parameters. Poor project management could result in the development timeline being pushed back, so in order to reach the deadline the team will redefine what our priorities should be and reassign tasks to get back on track. 
+
+## How to Push onto Repo:
+Make sure you're never pushing directly onto main! Use only pull requests.
+### Locally (Terminal):
+1. Make sure you're on the *dev* branch and you're working on the most up-to-date code: 
+    1. git switch dev
+        - Puts you on the dev branch
+        - To double check what branch you're on: git branch
+    2. git pull
+2. Once you've written your code, stage and commit your changes:
+    1. git add .
+        - . adds all the files you've changed; you can replace it with a specific filename if you only worked on one
+    2. git commit -m "Describe the change"
+3. Push the changes onto GitHub:
+    1. git push
+
+### Remote (GitHub):
+Once agreed that *dev* is stable and can be merged onto main, <br>
+1. Open GitHub online, click on Pull Requests, click "New pull request"
+    - base: main
+    - compare: dev
+2. Title the request with a brief description of the changes
+3. Approve merge differences
