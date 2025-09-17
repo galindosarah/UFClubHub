@@ -1,7 +1,7 @@
 # UF Club Hub 
 
 ### Team Name:
-**placeholder**
+**OneSPOTr**
 
 ### Team Members: 
 - Sarah Galindo
@@ -10,10 +10,10 @@
 - Mary Alice Hartman
 
 ### Team Roles:
-- **Project Master:**
-- **Scrum Master:**
-- **Github Master:**
-- **Developers:** 
+- **Project Master:** Sarah Galindo
+- **Scrum Master:** Celine Hui
+- **Backend Development Team Members:** Mary Alice Hartman, Laurence Georges
+- **Frontend Development Team Members:** Sarah Galindo, Celine Hui
 
 ### Programming Languages, Frameworks, and Technology:
 - C++ 
