@@ -1,7 +1,7 @@
 # UF Club Hub 
 
 ### Team Name:
-**OneSPOTr**
+**OneSPOT**
 
 ### Team Members: 
 - Sarah Galindo
@@ -54,4 +54,5 @@ Once agreed that *dev* is stable and can be merged onto main, <br>
     - base: main
     - compare: dev
 2. Title the request with a brief description of the changes
-3. Approve merge differences
+3. Have another team member review and approve of your request
+4. Approve merge differences
