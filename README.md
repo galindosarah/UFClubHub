@@ -20,6 +20,7 @@
 - Python 
 - MariaDB 
 - React
+- SQL
 
 ## Challenge Statement:
 Students often need reliable platforms to communicate with each other and share important information. In fact, multiple clubs on the UF campus lack a specific platform where they can make announcements about their events and have to rely on social media like Instagram, Discord, and many more. Students often have a hard time looking for information about clubs because of the different interfaces used by those clubs. As a result, this process can be challenging, particularly for incoming students seeking to engage in campus life.
