@@ -1,16 +1,25 @@
 import mariadb
+from dotenv import load_dotenv
 import os
 from mariadb._mariadb import cursor
 
 
 def __main__():
     try:
+        load_dotenv()
+
+        print("users:", os.getenv("DB_USER"))
+        print("password repr:", repr(os.getenv("DB_PASSWORD")))
+        print("host:", os.getenv("DB_HOST"))
+        print("port:", os.getenv("DB_PORT"))
+
         conn = mariadb.connect(
-            user="clubhub_user",
-            password="GatorClubHub2025!",
-            host="localhost",
-            port=3306,
-            database="ClubHub"
+            user=os.getenv("DB_USER"),
+            password=os.getenv("DB_PASSWORD"),
+            host=os.getenv("DB_HOST"),
+            port=int(os.getenv("DB_PORT")),
+            database=os.getenv("DB_DATABASE"),
+            ssl=True
         )
         cursor = conn.cursor()
         print("Connected to MariaDB")
