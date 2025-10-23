@@ -1,0 +1,12 @@
+/* src/components/NavBar.css */
+.navbar {
+  /* prevent global #root text-align:center from affecting children */
+  text-align: left;
+}
+
+.navbar__inner {
+  display: flex;
+  gap: 12px;
+  justify-content: flex-start; /* left-align the links */
+  align-items: center;
+}
