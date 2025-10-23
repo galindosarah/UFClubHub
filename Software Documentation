@@ -1,2 +1,5 @@
 MariaDB and Python connection and database interaction documentation:
 https://mariadb.com/docs/connectors/mariadb-connector-python/usage#passing-parameters-to-sql-statements
+
+Linking Django and React:
+https://www.geeksforgeeks.org/reactjs/how-to-connect-django-with-reactjs/#connect-frontend-with-backend
