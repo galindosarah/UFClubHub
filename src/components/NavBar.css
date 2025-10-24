@@ -1,12 +1,43 @@
-/* src/components/NavBar.css */
 .navbar {
-  /* prevent global #root text-align:center from affecting children */
-  text-align: left;
+  position: fixed;           /* sticks to top */
+  top: 0;
+  left: 0;
+  width: 100%;               /* full width across the page */
+  height: 60px;              /* adjust to your liking */
+  background-color: white; /* dark background */
+  color: #1a1a1a;
+  display: flex;
+  align-items: center;
+  z-index: 1000;             /* keep it above other elements */
+  /* box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3); */
 }
 
 .navbar__inner {
   display: flex;
-  gap: 12px;
-  justify-content: flex-start; /* left-align the links */
+  justify-content: space-between; /* pushes left and right apart */
   align-items: center;
+  width: 100%;
+  padding: 0 40px;               /* left-right padding */
+}
+
+.logo-placeholder {
+  font-weight: bold;
+  color: #888;
+}
+
+/* right side links */
+.navbar__right {
+  display: flex;
+  gap: 24px;                    /* space between links */
+}
+
+.navbar__right a {
+  color: #1a1a1a;
+  text-decoration: none;
+  font-weight: 500;
+  transition: color 0.2s ease;
+}
+
+.navbar__right a:hover {
+  color: #646cff;               /* hover color */
 }
