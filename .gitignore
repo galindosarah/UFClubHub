@@ -2,7 +2,6 @@
 build/
 CMakeFiles/
 cmake-build-*/
-node_modules/
 
 # --- CMake generated files ---
 CMakeCache.txt
