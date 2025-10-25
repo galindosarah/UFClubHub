@@ -1,0 +1,15 @@
+.searchBar {
+  width: 100%;
+}
+
+.searchBar input {
+  width: 100%;
+  padding: 10px;
+  font-size: 1rem;
+  border: 1px solid gray;
+  border-radius: 3px;
+  box-sizing: border-box;
+  background-color: white;
+  caret-color: black; /* text cursor color */
+  color: black; /* text color */
+}
