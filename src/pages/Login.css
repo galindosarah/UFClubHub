@@ -1,0 +1,123 @@
+
+/* Remove top padding only on the login route */
+body.login-page #root {
+  padding-top: 0; 
+  max-width: none;
+  margin: 0;
+  padding: 0;
+}
+
+.login-wrap {
+  height: 100dvh;
+  width: 100vw;
+  overflow: hidden;
+  display: grid;
+  place-items: center;
+  --left: rgb(0, 13, 255);
+  --right:  rgb(255, 157, 0);
+  background:
+    radial-gradient(120% 70% at 0% 50%, var(--left) 0 10%, transparent 100%),
+    radial-gradient(120% 70% at 100% 50%, var(--right) 0 10%, transparent 100%),
+    #ffffff00;
+    background-blend-mode: screen;
+}
+
+body.login-page, html.login-page {
+  height: 100%;
+  margin: 0;
+  overflow: hidden;       /* no scrollbars while on login */
+}
+
+.login-card {
+  width: 100%;
+  max-width: 420px;
+  height: 500px;
+  max-height: 500px;
+  background: #ffffff;
+  border: 1px solid rgba(0,0,0,0.06);
+  border-radius: 16px;
+  padding: 1.75rem;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.06);
+}
+
+.login-title {
+  margin: 20px 0 50px 0;
+  font-size: 3.2em;
+  line-height: 1.2;
+  letter-spacing: 0.2px;
+  text-align: center;
+}
+
+
+.login-form {
+  margin-top: 1rem;
+  display: grid;
+  gap: 0.9rem;
+}
+
+.form-field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.45rem;
+}
+
+.form-field label {
+    margin: 10px 0;
+    font-size: 1.35rem;
+    line-height: 1.2;
+    color: #404040;
+    font-weight: 600;
+    text-align:left;
+}
+
+.input {
+  width: 100%;
+  padding: 0.7rem 0.9rem;
+  font-size: 1rem;
+  border: 1px solid #d7d7d7;
+  border-radius: 10px;
+  background: #fff;
+  color: #000000;
+  outline: none;
+  transition: border-color 120ms ease, box-shadow 120ms ease;
+  box-sizing: border-box;
+  margin: 0 0 10px;
+}
+
+.input:focus {
+  border-color: #646cff;
+  box-shadow: 0 0 0 3px rgba(210, 32, 216, 0.498);
+}
+
+.btn-primary {
+  width: 30%;
+  margin: 3rem;
+  padding: 0.75rem 1rem;
+  border: 1px solid transparent;
+  border-radius: 10px;
+  background: #1a1a1a;
+  color: #fff;
+  font-weight: 600;
+  cursor: pointer;
+  transition: transform 80ms ease, border-color 160ms ease;
+}
+
+.btn-primary:hover {
+  border-color: #646cff;
+  transform: translateY(-1px);
+}
+
+.error-text {
+  color: #e63946;   /* red error color */
+  font-size: 0.9rem;
+  margin-top: 0.5rem;
+  margin-bottom: 10px;
+}
+
+/* Small screens */
+@media (max-width: 420px) {
+  .login-card {
+    padding: 0.5rem;
+    border-radius: 12px;
+  }
+}
