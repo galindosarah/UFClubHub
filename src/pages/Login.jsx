@@ -16,7 +16,7 @@ export default function Login() {
     document.documentElement.classList.remove("login-page");
   };
   }, []);
-  function handleSubmit(e) {
+  async function handleSubmit(e) {
     e.preventDefault();
 
     // Simple front-end validation
@@ -29,11 +29,32 @@ export default function Login() {
       return;
     }
 
-    // Temp login success simulation
-    localStorage.setItem("user", JSON.stringify({ email })); // save to storage
-    setError("");
-    navigate("/explore", { replace: true }); // go to Explore after login
-  }
+    try {
+      const response = await fetch("http://127.0.0.1:8000/api/accounts/login/", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, password }),
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        // Login success
+        localStorage.setItem("user", JSON.stringify(data));
+        navigate("/explore", { replace: true });
+      } else {
+        // Login failed
+        setError(data.error || "Login failed. Please try again.");
+      }
+    } catch (err) {
+      setError("Unable to connect to the server.");
+    }
+}
+    // // Temp login success simulation
+    // localStorage.setItem("user", JSON.stringify({ email })); // save to storage
+    // setError("");
+    // navigate("/explore", { replace: true }); // go to Explore after login
+  
 
   return (
     <div className="login-wrap">
@@ -72,3 +93,4 @@ export default function Login() {
     </div>
   );
 }
+
