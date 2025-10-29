@@ -1,0 +1,23 @@
+<!-- test_frontend.html -->
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Test Backend</title>
+</head>
+<body>
+  <button id="test-btn">Test Backend</button>
+  <p id="result"></p>
+
+  <script>
+    document.getElementById("test-btn").onclick = async () => {
+      try {
+        const res = await fetch("http://127.0.0.1:8000/api/test/");
+        const data = await res.json();
+        document.getElementById("result").innerText = data.status;
+      } catch (err) {
+        document.getElementById("result").innerText = "Error: " + err;
+      }
+    };
+  </script>
+</body>
+</html>
