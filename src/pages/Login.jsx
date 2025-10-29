@@ -16,8 +16,44 @@ export default function Login() {
     document.documentElement.classList.remove("login-page");
   };
   }, []);
-  async function handleSubmit(e) {
+//   async function handleSubmit(e) {
+//     e.preventDefault();
+
+//     // Simple front-end validation
+//     if (!email.endsWith("@ufl.edu")) {
+//       setError("Please use your @ufl.edu email address.");
+//       return;
+//     }
+//     if (password.trim().length < 1) {
+//       setError("Password cannot be empty.");
+//       return;
+//     }
+
+//     try {
+//       const response = await fetch("http://localhost:8000/login/", {
+//         method: "POST",
+//         headers: { "Content-Type": "application/json" },
+//         body: JSON.stringify({ email, password }),
+//       });
+
+//       const data = await response.json();
+
+//       if (response.ok) {
+//         // Login success
+//         localStorage.setItem("user", JSON.stringify(data));
+//         navigate("/explore", { replace: true });
+//       } else {
+//         // Login failed
+//         setError(data.error || "Login failed. Please try again.");
+//       }
+//     } catch (err) {
+//       setError("Unable to connect to the server.");
+//     }
+// }
+
+    function handleSubmit(e) {
     e.preventDefault();
+    // TODO: validate credentials, set auth state/token
 
     // Simple front-end validation
     if (!email.endsWith("@ufl.edu")) {
@@ -28,33 +64,11 @@ export default function Login() {
       setError("Password cannot be empty.");
       return;
     }
-
-    try {
-      const response = await fetch("http://127.0.0.1:8000/api/accounts/login/", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, password }),
-      });
-
-      const data = await response.json();
-
-      if (response.ok) {
-        // Login success
-        localStorage.setItem("user", JSON.stringify(data));
-        navigate("/explore", { replace: true });
-      } else {
-        // Login failed
-        setError(data.error || "Login failed. Please try again.");
-      }
-    } catch (err) {
-      setError("Unable to connect to the server.");
+    // Temp login success simulation
+    localStorage.setItem("user", JSON.stringify({ email })); // save to storage
+    setError("");
+    navigate("/explore", { replace: true }); // go to Explore after login
     }
-}
-    // // Temp login success simulation
-    // localStorage.setItem("user", JSON.stringify({ email })); // save to storage
-    // setError("");
-    // navigate("/explore", { replace: true }); // go to Explore after login
-  
 
   return (
     <div className="login-wrap">

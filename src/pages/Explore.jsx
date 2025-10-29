@@ -1,18 +1,25 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import SearchBar from "../components/SearchBar";
+import "./Explore.css"
 
 export default function Explore() {
   const [results, setResults] = useState([]);
 
   /* function to fetch results from backend */
-  const fetchResults = (query = "") => {
-
+  const fetchResults = async (query = "") => {
+  try {
+    const response = await fetch(`http://localhost:8000/api/search/?q=${query}`);
+    const data = await response.json();
+    setResults(data);
+  } catch (err) {
+    console.error("Failed to fetch clubs:", err);
   }
+};
 
-  /* show all results by default */
-  // useEffect(() => {
-  //   fetchResults();
-  // }, []);
+useEffect(() => {
+    fetchResults();
+  }, []);
+
 
   const handleSearch = (query) => {
     fetchResults(query);
@@ -31,9 +38,10 @@ export default function Explore() {
         <div className="results">
           {results.length > 0 ? 
             (results.map((item, index) => (
-              <div key={index}>
-                {item.name}
-              </div>
+            <div key={index} className="club-card">
+              <h2 className="club-name">{item.name}</h2>
+              <p className="club-bio">{item.bio}</p>
+            </div>
             ))
             ) : (
               <p>No results found.</p>
