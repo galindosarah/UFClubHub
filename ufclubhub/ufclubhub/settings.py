@@ -11,10 +11,12 @@ https://docs.djangoproject.com/en/5.2/ref/settings/
 """
 
 from pathlib import Path
+import os
+from dotenv import load_dotenv
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
-
+load_dotenv()
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.2/howto/deployment/checklist/
@@ -37,7 +39,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'clubs',
+    'clubs', 'corsheaders',
 ]
 
 MIDDLEWARE = [
@@ -48,6 +50,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
 ]
 
 ROOT_URLCONF = 'ufclubhub.urls'
@@ -75,18 +78,25 @@ WSGI_APPLICATION = 'ufclubhub.wsgi.application'
 
 DATABASES = {
     'default': {
-       'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'clubhub-db',
-        'USER': 'dbpgf39911181',
-        'PASSWORD': 've14m#28YqgQb9HqE5DBbab2',
-        'HOST': 'serverless-us-east4.sysp0000.db2.skysql.com',
-        'PORT': '4002',
-        # 'OPTIONS': {
-        #     'ssl': {'ca': r'C:\Users\lrncg\PycharmProjects\UFClubHub\skysql-ca-cert.pem'}
-        # },
-
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': os.getenv("DB_NAME"),       # matches DB_NAME in .env
+        'USER': os.getenv("DB_USER"),       # matches DB_USER in .env
+        'PASSWORD': os.getenv("DB_PASSWORD"),  # etc.
+        'HOST': os.getenv("DB_HOST"),
+        'PORT': os.getenv("DB_PORT"),
+        'OPTIONS': {
+            'ssl': {'ca': os.getenv("DB_CA_CERT")}
+        },
     }
 }
+
+
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.sqlite3',
+#         'NAME': BASE_DIR / 'db.sqlite3',
+#     }
+# }
 
 
 # Password validation
@@ -129,3 +139,8 @@ STATIC_URL = 'static/'
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+# CORS_ALLOW_ALL_ORIGINS
+CORS_ALLOWED_ORIGINS = [
+    'http://localhost:3000',
+]
