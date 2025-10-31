@@ -15,17 +15,17 @@ class  Account(models.Model):
     # admin_code = models.IntegerField(max_length = 50, blank = True)
     # is_admin = models.BooleanField(default=False)
 
-class Message(models.Model):
-    sender = models.ForeignKey(Account, on_delete=models.CASCADE)
-    club = models.ForeignKey(Club, on_delete=models.CASCADE, null=True,blank = True)
-    recipient = models.ForeignKey(Club, on_delete=models.CASCADE, null=True, blank=True)
-    message = models.TextField()
-    timestamp = models.DateTimeField(auto_now_add=True)
-
-class Announcements(models.Model):
-    club = models.ForeignKey(Club, on_delete=models.CASCADE)
-    title = models.CharField(max_length=100)
-    content = models.TextField()
-    timestamp = models.DateTimeField(auto_now_add=True)
-    event_date = models.DateTimeField(null=True, blank=True)
+# class Message(models.Model):
+#     sender = models.ForeignKey(Account, on_delete=models.CASCADE)
+#     club = models.ForeignKey(Club, on_delete=models.CASCADE, null=True,blank = True)
+#     recipient = models.ForeignKey(Club, on_delete=models.CASCADE, null=True, blank=True)
+#     message = models.TextField()
+#     timestamp = models.DateTimeField(auto_now_add=True)
+#
+# class Announcements(models.Model):
+#     club = models.ForeignKey(Club, on_delete=models.CASCADE)
+#     title = models.CharField(max_length=100)
+#     content = models.TextField()
+#     timestamp = models.DateTimeField(auto_now_add=True)
+#     event_date = models.DateTimeField(null=True, blank=True)
 
