@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import SearchBar from "../components/SearchBar";
+import { Link } from "react-router-dom";
 import "./Explore.css"
 
 export default function Explore() {
@@ -10,6 +11,7 @@ export default function Explore() {
   try {
     const response = await fetch(`http://localhost:8000/api/search/?q=${query}`);
     const data = await response.json();
+
     setResults(data);
   } catch (err) {
     console.error("Failed to fetch clubs:", err);
@@ -38,10 +40,13 @@ useEffect(() => {
         <div className="results">
           {results.length > 0 ? 
             (results.map((item, index) => (
-            <div key={index} className="club-card">
-              <h2 className="club-name">{item.name}</h2>
-              <p className="club-bio">{item.bio}</p>
-            </div>
+              <Link key={item.id} to={`/clubs/${item.id}`} className='club-link'>
+                <div  
+                    className="club-card">
+                  <h2 className="club-name">{item.name}</h2>
+                  <p className="club-bio">{item.bio}</p>
+                </div>
+              </Link>
             ))
             ) : (
               <p>No results found.</p>

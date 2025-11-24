@@ -62,7 +62,7 @@ def search_clubs(request): #when you type a club name in the search bar
     else: #if empty
         club = Club.objects.all() #display all the club names in alphabetical order
 
-    results = list(club.values("name","bio", "year", "members")) #convert the list of club Model objects into a dictionary list
+    results = list(club.values("id","name","bio", "year", "members")) #convert the list of club Model objects into a dictionary list
     return JsonResponse(results, safe=False) #return the result
 
 
