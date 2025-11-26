@@ -1,0 +1,35 @@
+.profile-wrap {
+    border: 1px solid rgb(216, 216, 216);
+    border-radius: 5px;
+    padding: 1.5rem;
+    margin-top: 2rem;
+    text-align: left;
+}
+
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+
+}
+
+.logout-button {
+    /* width: 20%; */
+    position: relative;
+    top: 20px;
+    margin-top: 10px;
+    /* margin: 3rem; */
+    padding: 0.75rem 1rem;
+    border: 1px solid transparent;
+    border-radius: 10px;
+    background: gray;
+    color: #fff;
+    font-weight: 600;
+    cursor: pointer;
+    transition: transform 80ms ease, border-color 160ms ease, background 200ms ease;
+}
+
+.logout-button:hover {
+    background: rgb(110, 110, 110);
+}

@@ -20,12 +20,21 @@ export default function NavBar() {
           >
             Explore
           </Link>
+          
+          <Link
+            to="/clubs"
+            aria-current={pathname === "/clubs" ? "page" : undefined}
+          >
+            My Clubs
+          </Link>
+
           <Link
             to="/account"
             aria-current={pathname === "/account" ? "page" : undefined}
           >
             My Account
           </Link>
+          
         </div>
       </nav>
     </header>
