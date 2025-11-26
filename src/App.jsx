@@ -27,7 +27,8 @@ export default function App() {
           <Route path="/explore" element={<Explore />} />
           <Route path="/clubs" element={<Clubs />} />
           <Route path="/account" element={<Account />} />
-          <Route path="/clubs/:clubId" element={<ClubPage/>} />
+          {/* <Route path="/clubs/:clubId" element={<ClubPage/>} /> */}
+          <Route path="/clubs/demo" element={<ClubPage/>} />
         </Route>
 
         {/* Fallback
