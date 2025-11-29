@@ -91,7 +91,7 @@ body.login-page, html.login-page {
 
 .btn-primary {
   width: 30%;
-  margin: 3rem;
+  margin: 1.5rem 9rem;
   padding: 0.75rem 1rem;
   border: 1px solid transparent;
   border-radius: 10px;
@@ -121,3 +121,34 @@ body.login-page, html.login-page {
     border-radius: 12px;
   }
 }
+
+/* TAB BUTTONS */
+.tab-row {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 1.5rem;
+  gap: 1rem;
+}
+
+.tab-btn {
+  background: none;
+  border: none;
+  padding: 0.6rem 1.2rem;
+  font-size: 1rem;
+  cursor: pointer;
+  color: #888;
+  border-bottom: 2px solid transparent;
+  transition: color 150ms ease, border-color 150ms ease;
+}
+
+.tab-btn.active {
+  color: #000;
+  font-weight: 600;
+  border-color: #646cff;
+}
+
+.tab-btn:hover {
+  color: #000;
+  border-color: #ffa264;
+}
+
