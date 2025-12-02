@@ -38,7 +38,7 @@ def sign_up(request):
     # Create the user using refactored class method
     Users.add_user(
         email=email,
-        username=name,
+        name=name,
         ufid=ufid,
         permissions=default_permissions
     )
@@ -63,20 +63,20 @@ def log_in(request):
     except json.JSONDecodeError:
         return JsonResponse({"error": "Invalid JSON"}, status=400)
 
-    username_or_email = data.get("email")  # could be email or club username
+    name_or_email = data.get("email")  # could be email or club username
     password = data.get("password")
-    if not username_or_email or not password:
+    if not name_or_email or not password:
         return JsonResponse({"error": "Email/username and password are required"}, status=400)
 
     # -------------------- Try standard user login --------------------
     try:
-        user = Users.objects.get(email=username_or_email)
+        user = Users.objects.get(email=name_or_email)
         login_record = Login.objects.get(user=user)
         if check_password(password, login_record.password):
             return JsonResponse({
                 "type": "user",
                 "ufid": user.ufid,
-                "username": user.username,
+                "name": user.name,
                 "email": user.email,
                 "message": "User login successful"
             }, status=200)
@@ -89,7 +89,7 @@ def log_in(request):
 
     # -------------------- Try club login --------------------
     try:
-        club_login = ClubLogin.objects.get(username=username_or_email)
+        club_login = ClubLogin.objects.get(club_name=name_or_email)
         if club_login.password != password:  # assuming plaintext; if hashed, use check_password
             return JsonResponse({"error": "Invalid password"}, status=400)
 
@@ -163,13 +163,14 @@ def post_announcement(request):
     if actual != required:
         return JsonResponse({"error": "Insufficient permissions"}, status=403)
 
-    title = request.POST.get("title")
-    content = request.POST.get("content")
+    body = json.loads(request.body.decode()) if request.body else {}
+    title = body.get("title") or request.POST.get("title")
+    content = body.get("content") or request.POST.get("content")
+
     if not title or not content:
         return JsonResponse({"error": "Title and content are required"}, status=400)
 
     announcement = Announcements.add_announcement(
-        id=None,
         title=title,
         content=content,
         posted_at=timezone.now().time(),
@@ -179,7 +180,7 @@ def post_announcement(request):
     return JsonResponse({
         "success": True,
         "announcement_id": announcement.id,
-        "club": club.name,
+        "club": club.club_name,
         "title": title
     })
 
@@ -207,7 +208,6 @@ def create_event(request):
         return JsonResponse({"error": "Invalid date/time format"}, status=400)
 
     event = Events.add_event(
-        id=None,
         title=title,
         description=description,
         event_datetime=event_datetime,
@@ -218,7 +218,7 @@ def create_event(request):
         "success": True,
         "event_id": event.id,
         "title": event.title,
-        "club": club.name,
+        "club": club.club_name,
         "datetime": event.event_datetime.isformat()
     })
 
