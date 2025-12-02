@@ -11,3 +11,4 @@ class  Account(models.Model):
     # is_admin = models.BooleanField(default=False)
 
 # Create your models here.
+
