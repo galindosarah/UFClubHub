@@ -52,7 +52,7 @@ def sign_up(request):
 
 
 
-
+@csrf_exempt
 def log_in(request):
     if request.method != 'POST':
         return JsonResponse({"error": "Invalid request method"}, status=400)
@@ -72,7 +72,7 @@ def log_in(request):
     try:
         user = Users.objects.get(email=name_or_email)
         login_record = Login.objects.get(user=user)
-        if check_password(password, login_record.password):
+        if password == login_record.password:
             return JsonResponse({
                 "type": "user",
                 "ufid": user.ufid,
