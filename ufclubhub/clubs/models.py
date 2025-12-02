@@ -1,8 +1,10 @@
 from asyncio import Event
 
+from django.core.exceptions import ObjectDoesNotExist
 from django.db import models
 from django.db.models import ForeignKey
 from django.db.models import CompositePrimaryKey
+from django.conf import settings
 
 
 class Permissions(models.Model):
@@ -19,10 +21,20 @@ class Permissions(models.Model):
 
 #Reflects Users relation in db
 class  Users(models.Model):
-    username = models.CharField(max_length=100)
+    name = models.CharField(max_length=100)
     email = models.EmailField(unique=True, max_length=100)
     ufid = models.CharField(unique=True, max_length=10, primary_key=True)
-    permissions = models.ForeignKey(Permissions, on_delete=models.SET_NULL, related_name='users', null=True, blank=True, default=1) #any null permissions will be treated the same as user level
+    permissions = models.ForeignKey(
+        Permissions,
+        on_delete=models.SET_NULL,
+        related_name='users',
+        null=True,
+        blank=True,
+        default=2,
+        db_column='permissions'  # explicitly match your DB column
+    )
+
+    #any null permissions will be treated the same as user level
 
     class Meta:
         managed = False
@@ -30,8 +42,13 @@ class  Users(models.Model):
 
     #add user to db // forms.py will do input validation before calling this
     @classmethod
-    def add_user(cls, username, email, ufid, permissions=None):
-        user = cls.objects.create(username=username, email=email, ufid=ufid, permissions=permissions)
+    def add_user(cls, name, email, ufid, permissions=None):
+        if permissions is None:
+            try:
+                permissions = Permissions.objects.get(permission_level=2)
+            except ObjectDoesNotExist:
+                permissions = None
+        user = cls.objects.create(name=name, email=email, ufid=ufid, permissions=permissions)
         return user
 
     #selects user whose ufid=self.ufid and deletes the row
@@ -45,14 +62,15 @@ class  Users(models.Model):
         return cls.objects.filter(ufid=ufid).update(permissions=new_permissions)
 
     def __str__(self):
-        return self.username
+        return self.name
 
 class Login(models.Model):
     user = models.OneToOneField(
         Users,
         on_delete=models.CASCADE,
         related_name='login_record',
-        primary_key=True
+        primary_key=True,
+        db_column='ufid'
     )
     password = models.CharField(max_length=255)
 
@@ -76,16 +94,16 @@ class Club(models.Model):
 
     #input validation somewhere else // forms.py
     @classmethod
-    def add_club(cls, name, category, permissions=None):
-        return cls.objects.create(name=name, category=category, permissions=permissions)
+    def add_club(cls, club_name, category, permissions=None):
+        return cls.objects.create(club_name=club_name, category=category, permissions=permissions)
 
     @classmethod
-    def remove_club(cls, name):
-        return cls.objects.filter(name=name).first()
+    def remove_club(cls, club_name):
+        return cls.objects.filter(club_name=club_name).first()
 
     @classmethod
     def retrieve_club(cls, name):
-        return cls.objects.filter(name=name)
+        return cls.objects.filter(club_name=name)
 
     @classmethod
     def retrieve_all_clubs(cls):
@@ -103,8 +121,9 @@ class Club(models.Model):
 
 
 class Member(models.Model):
-    user = models.ForeignKey(Users, on_delete=models.CASCADE, related_name='membership')
-    club_name = models.ForeignKey(Club, on_delete=models.CASCADE, related_name='members')
+    id = models.AutoField(primary_key=True)
+    user = models.ForeignKey(Users, on_delete=models.CASCADE, related_name='membership', db_column='ufid')
+    club_name = models.ForeignKey(Club, on_delete=models.CASCADE, related_name='members', db_column='club_name')
     date_joined = models.DateField()
     permissions_level = models.IntegerField()
 
@@ -132,22 +151,27 @@ class Member(models.Model):
         return [m.club_name for m in memberships]
 
     def __str__(self):
-        return f"{self.user.username} in {self.club_name.name}"
+        return f"{self.user.name} in {self.club_name.name}"
 
 class Events(models.Model):
     id = models.AutoField(primary_key=True)
     title = models.CharField(max_length=255)
     description = models.TextField()
     event_datetime = models.DateTimeField()
-    club = models.ForeignKey(Club, on_delete=models.CASCADE, related_name='events')
+    club = models.ForeignKey(Club, on_delete=models.CASCADE, related_name='events', db_column='club_name')
 
     class Meta:
         managed = False
         db_table = 'events'
 
     @classmethod
-    def add_event(cls, id, title, description, event_datetime, club):
-        return cls.objects.create(id=id, title=title, description=description, event_datetime=event_datetime, club=club)
+    def add_event(cls, title, description, event_datetime, club):
+        return cls.objects.create(
+            title=title,
+            description=description,
+            event_datetime=event_datetime,
+            club=club
+        )
 
     ##retrieve events for a specific club
     @classmethod
@@ -167,15 +191,20 @@ class Announcements(models.Model):
     title = models.CharField(max_length=255)
     content = models.TextField()
     posted_at = models.TimeField()
-    club = models.ForeignKey(Club, on_delete=models.CASCADE, related_name='announcements')
+    club = models.ForeignKey(Club, on_delete=models.CASCADE, related_name='announcements', db_column='club_name')
 
     class Meta:
         managed = False
         db_table = 'announcements'
 
     @classmethod
-    def add_announcement(cls, id, title, content, posted_at, club):
-        return cls.objects.create(id=id, title=title, content=content, posted_at=posted_at, club=club)
+    def add_announcement(cls, title, content, posted_at, club):
+        return cls.objects.create(
+            title=title,
+            content=content,
+            posted_at=posted_at,
+            club=club
+        )
 
     #all announcements for one club, do i need all? how can i filter for just what i want?
     @classmethod
@@ -190,13 +219,16 @@ class ClubLogin(models.Model):
         Club,
         on_delete=models.CASCADE,
         related_name='login_record',
-        primary_key=True
+        primary_key=True,
+        to_field='club_name',
+        db_column='club'
     )
     username = models.CharField(max_length=100)
     password = models.CharField(max_length=255)
     permission = models.ForeignKey(
         Permissions,
-        on_delete=models.CASCADE
+        on_delete=models.CASCADE,
+        db_column='permission'
     )
 
     class Meta:
@@ -204,7 +236,7 @@ class ClubLogin(models.Model):
         db_table = 'ClubLogin'
 
     def __str__(self):
-        return f"{self.username} for {self.club.name}"
+        return f"{self.username} for {self.club.club_name}"
 
 
 
