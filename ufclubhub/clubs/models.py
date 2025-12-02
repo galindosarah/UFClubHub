@@ -1,31 +1,210 @@
+from asyncio import Event
+
 from django.db import models
-class Club(models.Model):
-    name = models.CharField(max_length=100) # stores the club name
-    bio = models.TextField() # stores the club description
-    year = models.IntegerField() # stores the year the club was founded
-    members = models.IntegerField(default=0) # stores the amount of members in the club
+from django.db.models import ForeignKey
+from django.db.models import CompositePrimaryKey
 
-class  Account(models.Model):
+
+class Permissions(models.Model):
+    permission_level = models.IntegerField(primary_key=True)
+    description = models.CharField(max_length=100)
+
+    def __str__(self):
+        return f"{self.permission_level}: {self.description}"
+
+    class Meta:
+        managed = False
+        db_table = 'permissions'
+
+
+#Reflects Users relation in db
+class  Users(models.Model):
     username = models.CharField(max_length=100)
-    email = models.EmailField(unique=True)
-    # grad_year = models.IntegerField()
-    password = models.CharField(max_length=128)
-    # clubs = models.ManyToManyField(Club, related_name = "member")
-    # is_club = models.BooleanField(default=False)
-    # admin_code = models.IntegerField(max_length = 50, blank = True)
-    # is_admin = models.BooleanField(default=False)
+    email = models.EmailField(unique=True, max_length=100)
+    ufid = models.CharField(unique=True, max_length=10, primary_key=True)
+    permissions = models.ForeignKey(Permissions, on_delete=models.SET_NULL, related_name='users', null=True, blank=True, default=1) #any null permissions will be treated the same as user level
 
-# class Message(models.Model):
-#     sender = models.ForeignKey(Account, on_delete=models.CASCADE)
-#     club = models.ForeignKey(Club, on_delete=models.CASCADE, null=True,blank = True)
-#     recipient = models.ForeignKey(Club, on_delete=models.CASCADE, null=True, blank=True)
-#     message = models.TextField()
-#     timestamp = models.DateTimeField(auto_now_add=True)
-#
-# class Announcements(models.Model):
-#     club = models.ForeignKey(Club, on_delete=models.CASCADE)
-#     title = models.CharField(max_length=100)
-#     content = models.TextField()
-#     timestamp = models.DateTimeField(auto_now_add=True)
-#     event_date = models.DateTimeField(null=True, blank=True)
+    class Meta:
+        managed = False
+        db_table = 'users'
+
+    #add user to db // forms.py will do input validation before calling this
+    @classmethod
+    def add_user(cls, username, email, ufid, permissions=None):
+        user = cls.objects.create(username=username, email=email, ufid=ufid, permissions=permissions)
+        return user
+
+    #selects user whose ufid=self.ufid and deletes the row
+    @classmethod
+    def delete_user(cls, ufid):
+        return cls.objects.filter(ufid=ufid).delete()
+
+    #selects for ufid and updates permissions for club admin
+    @classmethod
+    def update_user_permissions(cls, ufid, new_permissions):
+        return cls.objects.filter(ufid=ufid).update(permissions=new_permissions)
+
+    def __str__(self):
+        return self.username
+
+class Login(models.Model):
+    user = models.OneToOneField(
+        Users,
+        on_delete=models.CASCADE,
+        related_name='login_record',
+        primary_key=True
+    )
+    password = models.CharField(max_length=255)
+
+    class Meta:
+        managed = False
+        db_table = 'login'
+
+
+
+class Club(models.Model):
+    club_name = models.CharField(max_length=100, primary_key=True) # stores the club name
+    permissions = models.ForeignKey(
+        Permissions,
+        on_delete=models.CASCADE,
+        db_column='exec_permission_level')
+    category = models.CharField(max_length=50)
+
+    class Meta:
+        managed = False
+        db_table = 'club'
+
+    #input validation somewhere else // forms.py
+    @classmethod
+    def add_club(cls, name, category, permissions=None):
+        return cls.objects.create(name=name, category=category, permissions=permissions)
+
+    @classmethod
+    def remove_club(cls, name):
+        return cls.objects.filter(name=name).first()
+
+    @classmethod
+    def retrieve_club(cls, name):
+        return cls.objects.filter(name=name)
+
+    @classmethod
+    def retrieve_all_clubs(cls):
+        return cls.objects.all()
+
+    @classmethod
+    def search_by_name(cls, query):
+        #reusable search
+        if not query:
+            return cls.retrieve_all_clubs()
+        return cls.objects.filter(name__icontains=query)
+
+    def __str__(self):
+        return self.club_name
+
+
+class Member(models.Model):
+    user = models.ForeignKey(Users, on_delete=models.CASCADE, related_name='membership')
+    club_name = models.ForeignKey(Club, on_delete=models.CASCADE, related_name='members')
+    date_joined = models.DateField()
+    permissions_level = models.IntegerField()
+
+    class Meta:
+        unique_together = (('user', 'club_name'),)
+        managed = False
+        db_table = 'members'
+
+    #these need to be updated to not instantiate everytime(class method, etc.)
+    @classmethod
+    def add_member(cls, user, club_name, date_joined, permissions_level):
+        return cls.objects.create(user=user, club_name=club_name, date_joined=date_joined, permissions_level=permissions_level)
+
+    @classmethod
+    def remove_member_one_club(cls, user, club_name):
+        return cls.objects.filter(user=user, club_name=club_name).delete()
+
+    @classmethod
+    def remove_member_all_clubs(cls, user):
+        return cls.objects.filter(user=user).delete()
+
+    @classmethod
+    def retrieve_user_clubs(cls, user):
+        memberships = cls.objects.filter(user=user).select_related('club_name')
+        return [m.club_name for m in memberships]
+
+    def __str__(self):
+        return f"{self.user.username} in {self.club_name.name}"
+
+class Events(models.Model):
+    id = models.AutoField(primary_key=True)
+    title = models.CharField(max_length=255)
+    description = models.TextField()
+    event_datetime = models.DateTimeField()
+    club = models.ForeignKey(Club, on_delete=models.CASCADE, related_name='events')
+
+    class Meta:
+        managed = False
+        db_table = 'events'
+
+    @classmethod
+    def add_event(cls, id, title, description, event_datetime, club):
+        return cls.objects.create(id=id, title=title, description=description, event_datetime=event_datetime, club=club)
+
+    ##retrieve events for a specific club
+    @classmethod
+    def retrieve_event(cls, club):
+        return cls.objects.filter(club=club)
+
+    @classmethod
+    def retrieve_events_for_clubs(cls, clubs):
+        return cls.objects.filter(club__in=clubs).order_by('event_datetime')
+
+    def __str__(self):
+        return f"{self.title} ({self.club.name})"
+
+
+class Announcements(models.Model):
+    id = models.AutoField(primary_key=True)
+    title = models.CharField(max_length=255)
+    content = models.TextField()
+    posted_at = models.TimeField()
+    club = models.ForeignKey(Club, on_delete=models.CASCADE, related_name='announcements')
+
+    class Meta:
+        managed = False
+        db_table = 'announcements'
+
+    @classmethod
+    def add_announcement(cls, id, title, content, posted_at, club):
+        return cls.objects.create(id=id, title=title, content=content, posted_at=posted_at, club=club)
+
+    #all announcements for one club, do i need all? how can i filter for just what i want?
+    @classmethod
+    def retrieve_announcement(cls, club):
+        return cls.objects.filter(club=club)
+
+    def __str__(self):
+        return f"{self.title} ({self.club.name})"
+
+class ClubLogin(models.Model):
+    club = models.OneToOneField(
+        Club,
+        on_delete=models.CASCADE,
+        related_name='login_record',
+        primary_key=True
+    )
+    username = models.CharField(max_length=100)
+    password = models.CharField(max_length=255)
+    permission = models.ForeignKey(
+        Permissions,
+        on_delete=models.CASCADE
+    )
+
+    class Meta:
+        managed = False
+        db_table = 'ClubLogin'
+
+    def __str__(self):
+        return f"{self.username} for {self.club.name}"
+
+
 
