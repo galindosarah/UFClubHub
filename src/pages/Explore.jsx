@@ -40,14 +40,14 @@ useEffect(() => {
         <div className="results">
           {results.length > 0 ? 
             (results.map((item, index) => (
-              <Link key={item.id} 
+              <Link key={item.club_name} 
                 //to={`/clubs/${item.id}`} 
                 to={`/clubs/demo`}
                 className='club-link'>
                 <div  
                     className="club-card">
-                  <h2 className="club-name">{item.name}</h2>
-                  <p className="club-bio">{item.bio}</p>
+                  <h2 className="club-name">{item.club_name}</h2>
+                  <p className="club-bio">{item.category}</p>
                 </div>
               </Link>
             ))
