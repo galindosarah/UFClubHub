@@ -9,16 +9,13 @@ import Explore from "./pages/Explore.jsx";
 import Account from "./pages/Account.jsx";
 import Clubs from "./pages/Clubs.jsx";
 import ClubPage from './pages/ClubPage.jsx';
-import ClubDashboard from './pages/ManageClub.jsx';
+import ManageClub from './pages/ManageClub.jsx';
 import MainLayout from './layouts/MainLayout.jsx';
-import { AuthProvider } from './AuthContext.jsx';
 
 
 export default function App() {
-  //const { user } = useAuth();
 
   return (
-    //<AuthProvider>
     <BrowserRouter>
       <Routes>
         {/* First load → go to Login */}
@@ -40,6 +37,5 @@ export default function App() {
         <Route path="*" element={<Navigate to="/login" replace />} /> */}
       </Routes>
     </BrowserRouter>
-    //<AuthProvider/>
   );
 }

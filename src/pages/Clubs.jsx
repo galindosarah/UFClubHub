@@ -6,11 +6,6 @@ export default function Clubs() {
     <div className="header">
       <h1>My Clubs</h1>
     </div>
-    
-    
-    
-    
-
    </div>
   );
 }

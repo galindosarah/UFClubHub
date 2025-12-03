@@ -38,7 +38,7 @@ export default function Login() {
     const data = await res.json();
 
     if (res.ok) {
-      // Backend tells us if it's a user or club
+      // Get account type from backend
       localStorage.setItem("user", JSON.stringify(data));
       navigate("/explore", { replace: true });
     } else {
