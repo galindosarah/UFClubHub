@@ -5,6 +5,7 @@ from django.utils import timezone
 from .models import Users, Club, Permissions, Login, Member, Events, ClubLogin, Announcements
 import json
 
+@csrf_exempt
 def sign_up(request):
     if request.method != 'POST':
         return JsonResponse({"error": "Invalid request"}, status=400)
@@ -14,38 +15,44 @@ def sign_up(request):
     name = data.get("name")
     email = data.get("email")
     raw_password = data.get("password")
-    password = make_password(raw_password)
+    ufid = data.get("ufid")
 
-    if not email:
-        return JsonResponse({"error": "Email required"}, status=400)
+    if not email or not raw_password or not ufid:
+        return JsonResponse({"error": "Missing required fields"}, status=400)
 
     # Validate UF email
     if not email.endswith("@ufl.edu"):
         return JsonResponse({"error": "Unauthorized email address"}, status=400)
 
+    # Validate UFID format
+    if len(ufid) != 8 or not ufid.isdigit():
+        return JsonResponse({"error": "UFID must be an 8-digit number"}, status=400)
+
     # Check duplicates
     if Users.objects.filter(email=email).exists():
         return JsonResponse({"error": "Email already associated with an account"}, status=400)
+    
+    if Users.objects.filter(ufid=ufid).exists():
+        return JsonResponse({"error": "UFID already registered"}, status=400)
 
     # You MUST generate or collect UFID — currently missing in your view
-    ufid = data.get("ufid")
-    if not ufid:
-        return JsonResponse({"error": "UFID is required"}, status=400)
+    # if not ufid:
+    #     return JsonResponse({"error": "UFID is required"}, status=400)
 
     # Default permissions (nullable foreign key)
-    default_permissions = Permissions.objects.filter(level='user').first()
+    default_permissions = Permissions.objects.get(permission_level=2)
 
     # Create the user using refactored class method
-    Users.add_user(
+    user = Users.objects.create(
+        name = name,
         email=email,
-        name=name,
         ufid=ufid,
         permissions=default_permissions
     )
 
     Login.objects.create(
-        user=ufid,
-        password=password
+        user=user,
+        password=make_password(raw_password)
     )
 
     return JsonResponse({"success": "Account successfully created!"}, status=200)
@@ -72,7 +79,7 @@ def log_in(request):
     try:
         user = Users.objects.get(email=name_or_email)
         login_record = Login.objects.get(user=user)
-        if password == login_record.password:
+        if check_password(password, login_record.password):
             return JsonResponse({
                 "type": "user",
                 "ufid": user.ufid,

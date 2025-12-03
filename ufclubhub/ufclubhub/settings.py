@@ -84,9 +84,9 @@ DATABASES = {
         'PASSWORD': os.getenv("DB_PASSWORD"),  # etc.
         'HOST': os.getenv("DB_HOST"),
         'PORT': os.getenv("DB_PORT"),
-        # 'OPTIONS': {
-        #     'ssl': {'ca': os.getenv("DB_CA_CERT")}
-        # },
+        'OPTIONS': {
+            'ssl': {'ca': os.getenv("DB_CA_CERT")}
+        },
     }
 }
 
@@ -144,4 +144,9 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 CORS_ALLOWED_ORIGINS = [
     'http://localhost:5173',
     'http://127.0.0.1:5173'
+]
+
+CSRF_TRUSTED_ORIGINS = [
+    "http://localhost:5173",
+    "http://127.0.0.1:5173",
 ]
