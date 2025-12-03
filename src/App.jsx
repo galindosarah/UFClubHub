@@ -9,10 +9,12 @@ import Explore from "./pages/Explore.jsx";
 import Account from "./pages/Account.jsx";
 import Clubs from "./pages/Clubs.jsx";
 import ClubPage from './pages/ClubPage.jsx';
+import ManageClub from './pages/ManageClub.jsx';
 import MainLayout from './layouts/MainLayout.jsx';
 
 
 export default function App() {
+
   return (
     <BrowserRouter>
       <Routes>

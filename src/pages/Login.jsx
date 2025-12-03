@@ -10,6 +10,7 @@ export default function Login() {
   const [password, setPassword] = useState("");
   const [signupEmail, setSignupEmail] = useState("");
   const [signupPassword, setSignupPassword] = useState("");
+  const [ufid, setUfid] = useState("");
   const [error, setError] = useState("");
 
   useEffect(() => {
@@ -22,21 +23,64 @@ export default function Login() {
     };
   }, []);
 
-  function handleLogin(e) {
+  async function handleLogin(e) {
     e.preventDefault();
     if (!email.endsWith("@ufl.edu")) return setError("Please use your @ufl.edu email.");
     if (!password.trim()) return setError("Password cannot be empty.");
-    localStorage.setItem("user", JSON.stringify({ email }));
-    navigate("/explore", { replace: true });
+    
+    try {
+    const res = await fetch("http://localhost:8000/api/login/", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ email, password }),
+    });
+
+    const data = await res.json();
+
+    if (res.ok) {
+      // Get account type from backend
+      localStorage.setItem("user", JSON.stringify(data));
+      navigate("/explore", { replace: true });
+    } else {
+      setError(data.error || "Login failed");
+    }
+  } catch (err) {
+    setError("Network error");
+  }
   }
 
-  function handleSignup(e) {
+  
+
+  async function handleSignup(e) {
     e.preventDefault();
     if (!signupEmail.endsWith("@ufl.edu")) return setError("Please use @ufl.edu email.");
     if (signupPassword.trim().length < 4) return setError("Password must be at least 4 chars.");
-    localStorage.setItem("user", JSON.stringify({ email: signupEmail }));
-    navigate("/explore", { replace: true });
+    
+     try {
+    const res = await fetch("http://localhost:8000/api/signup/", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        email: signupEmail,
+        password: signupPassword,
+        ufid,
+        name: signupEmail.split("@")[0], // optional default name
+      }),
+    });
+
+    const data = await res.json();
+
+    if (res.ok) {
+      localStorage.setItem("user", JSON.stringify({ email: signupEmail, ufid }));
+      navigate("/explore", { replace: true });
+    } else {
+      setError(data.error || "Sign up failed");
+    }
+  } catch (err) {
+    setError("Network error");
   }
+  }
+  
 
   return (
     <div className="login-wrap">
@@ -93,6 +137,12 @@ export default function Login() {
                 onChange={(e) => setSignupPassword(e.target.value)} />
             </div>
 
+            <div className="form-field">
+              <label>UFID</label>
+              <input className="input" type="text" required value={ufid}
+                onChange={(e) => setUfid(e.target.value)} />
+            </div>
+
             {error && <p className="error-text">{error}</p>}
             <button className="btn-primary" type="submit">Create Account</button>
           </form>
@@ -102,3 +152,4 @@ export default function Login() {
     </div>
   );
 }
+

@@ -1,4 +1,5 @@
 import { Link, useLocation } from "react-router-dom";
+
 import "./NavBar.css";
 
 export default function NavBar() {
@@ -7,6 +8,7 @@ export default function NavBar() {
   return (
     <header className="navbar">
       <nav className="navbar__inner">
+
         {/* LEFT SIDE — logo placeholder */}
         <div className="navbar__left">
           <div className="logo-placeholder">OneSPOT</div>
@@ -34,7 +36,6 @@ export default function NavBar() {
           >
             My Account
           </Link>
-          
         </div>
       </nav>
     </header>
