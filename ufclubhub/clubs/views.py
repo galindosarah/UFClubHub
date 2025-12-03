@@ -89,14 +89,14 @@ def log_in(request):
 
     # -------------------- Try club login --------------------
     try:
-        club_login = ClubLogin.objects.get(club_name=name_or_email)
+        club_login = ClubLogin.objects.get(username=name_or_email)
         if club_login.password != password:  # assuming plaintext; if hashed, use check_password
             return JsonResponse({"error": "Invalid password"}, status=400)
 
         club = club_login.club
         return JsonResponse({
             "type": "club",
-            "club_name": club.name,
+            "club_name": club.club_name,
             "category": club.category,
             "permission_level": club_login.permission.permission_level,
             "message": "Club login successful"
