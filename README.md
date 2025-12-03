@@ -57,3 +57,41 @@ Once agreed that *dev* is stable and can be merged onto main, <br>
 2. Title the request with a brief description of the changes
 3. Have another team member review and approve of your request
 4. Approve merge differences
+
+## Installation and Running Instructions:
+* Python must be version 3.10, 3.11, or 3.12
+
+After opening the project files, you will need to install Node.js from https://nodejs.org/en/download and run the following commands:
+
+```
+npm install
+
+pip install django
+
+pip install djangorestframework
+
+pip install django-cors-headers
+
+python -m pip install python-dotenv
+
+pip install mysqlclient
+```
+
+Then run the Django server by going into the /UFClubHub/ufclubhub folder and running:
+
+    python manage.py runserver
+
+Then in another terminal, stay in root folder run the REACT server with:
+
+    npm run dev
+
+### Sample User login:
+Email: celine@ufl.edu 
+
+Password: 1234
+
+### Sample Club Login:
+Username: WomeninComputerScience@ufl.edu
+
+Password: 1234
+
